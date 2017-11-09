@@ -45,6 +45,45 @@ public class SysUser {
 
     private Integer updateId;
 
+    /*一对一:一个管理员只有一个角色*/
+    private SysRole sysRole;
+
+    @Override
+    public String toString() {
+        return "SysUser{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", realname='" + realname + '\'' +
+                ", roleId=" + roleId +
+                ", usertype=" + usertype +
+                ", state=" + state +
+                ", thirdId='" + thirdId + '\'' +
+                ", endTime=" + endTime +
+                ", email='" + email + '\'' +
+                ", tel='" + tel + '\'' +
+                ", address='" + address + '\'' +
+                ", titleUrl='" + titleUrl + '\'' +
+                ", remark='" + remark + '\'' +
+                ", theme='" + theme + '\'' +
+                ", backSiteId=" + backSiteId +
+                ", createSiteId=" + createSiteId +
+                ", createTime=" + createTime +
+                ", createId=" + createId +
+                ", updateTime=" + updateTime +
+                ", updateId=" + updateId +
+                ", sysRole=" + sysRole +
+                '}';
+    }
+
+    public SysRole getSysRole() {
+        return sysRole;
+    }
+
+    public void setSysRole(SysRole sysRole) {
+        this.sysRole = sysRole;
+    }
+
     public Integer getId() {
         return id;
     }

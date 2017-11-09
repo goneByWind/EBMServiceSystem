@@ -16,8 +16,8 @@ public class MainController {
         return "login";
     }
 
-    @RequestMapping(value = "/index")
+    @RequestMapping(value = "/userlist")
     public String index(){
-        return "index";
+        return "admin-list";
     }
 }
