@@ -2,6 +2,8 @@ package com.lanou.admin.mapper;
 
 import com.lanou.admin.bean.SysRole;
 
+import java.util.List;
+
 public interface SysRoleMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -16,4 +18,6 @@ public interface SysRoleMapper {
     int updateByPrimaryKeyWithBLOBs(SysRole record);
 
     int updateByPrimaryKey(SysRole record);
+
+    List<SysRole> findRoleList();
 }

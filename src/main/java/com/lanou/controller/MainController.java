@@ -12,8 +12,5 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class MainController {
 
-    @RequestMapping(value = "/userlist")
-    public String index(){
-        return "admin-list";
-    }
+
 }
