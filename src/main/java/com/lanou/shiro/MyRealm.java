@@ -1,13 +1,17 @@
 package com.lanou.shiro;
 
+import com.lanou.admin.bean.SysUser;
+import com.lanou.admin.mapper.SysUserMapper;
 import com.lanou.bean.UserExample;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.omg.CORBA.UserException;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,6 +19,10 @@ import java.util.List;
  * Created by dllo on 17/11/8.
  */
 public class MyRealm extends AuthorizingRealm {
+
+    @Lazy
+    @Resource
+    private SysUserMapper sysUserMapper;
 
     @Override
     public String getName() {
@@ -30,29 +38,28 @@ public class MyRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         String username = (String) authenticationToken.getPrincipal();
-        if (!("zhangsan".equals(username))){
+        SysUser sysUser = sysUserMapper.selectByUserName(username);
+        if (sysUser == null) {
             throw new UnknownAccountException("用户名不对");
         }
 
         String password = new String((char[]) authenticationToken.getCredentials());
-        if (!("123".equals(password))){
+        if (!(sysUser.getPassword().equals(password))) {
             throw new IncorrectCredentialsException("密码不对");
         }
 
-        UserExample user = new UserExample();
-        user.setUsername(username);
-        user.setPassword(password);
-
-        return new SimpleAuthenticationInfo(user,password,getName());
+        return new SimpleAuthenticationInfo(sysUser, password, getName());
     }
+
     // 授权
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         /*这个是上面认证时,放在return中的user,好方便*/
-        UserExample user = (UserExample) principalCollection.getPrimaryPrincipal();
+        SysUser sysUser = (SysUser) principalCollection.getPrimaryPrincipal();
         // 可以获取user的用户id及各种信息↑
 
-        List<String> perList = Arrays.asList("user:query","user:update");
+        // TODO: 2017/11/9 授权!!! 
+        List<String> perList = Arrays.asList("user:query", "user:update");
 
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 
