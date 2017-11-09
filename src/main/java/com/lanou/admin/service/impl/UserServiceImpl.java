@@ -29,4 +29,14 @@ public class UserServiceImpl implements UserService {
     public void updateUserById(SysUser sysUser) {
         sysUserMapper.updateByPrimaryKeySelective(sysUser);
     }
+
+    @Override
+    public void addUser(SysUser sysUser) {
+        sysUserMapper.insertSelective(sysUser);
+    }
+
+    @Override
+    public void deleteUserById(Integer userId) {
+        sysUserMapper.deleteByPrimaryKey(userId);
+    }
 }

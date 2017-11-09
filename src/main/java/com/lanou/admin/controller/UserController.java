@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,5 +48,21 @@ public class UserController {
     public AjaxResult startUser(SysUser sysUser){
         userService.updateUserById(sysUser);
         return new AjaxResult("修改用户状态为:已启用");
+    }
+
+    @ResponseBody
+    @RequestMapping("/addUser")
+    public AjaxResult addUser(SysUser sysUser){
+        sysUser.setCreateTime(new Date());
+        sysUser.setState(1);
+        userService.addUser(sysUser);
+        return new AjaxResult("添加新管理员成功");
+    }
+
+    @ResponseBody
+    @RequestMapping("/deleteUser")
+    public AjaxResult deleteUser(@RequestParam("id") Integer userId){
+        userService.deleteUserById(userId);
+        return new AjaxResult("删除用户成功!");
     }
 }

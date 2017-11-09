@@ -25,22 +25,6 @@ public class SysRole {
     /*一对多:一个角色对应多个管理员(用不到)*/
 //    private List<SysUser> sysUserList;
 //
-//    @Override
-//    public String toString() {
-//        return "SysRole{" +
-//                "id=" + id +
-//                ", name='" + name + '\'' +
-//                ", status=" + status +
-//                ", sort=" + sort +
-//                ", createTime=" + createTime +
-//                ", createId=" + createId +
-//                ", updateTime=" + updateTime +
-//                ", updateId=" + updateId +
-//                ", remark='" + remark + '\'' +
-//                ", sysUserList=" + sysUserList +
-//                '}';
-//    }
-//
 //    public List<SysUser> getSysUserList() {
 //        return sysUserList;
 //    }
@@ -48,6 +32,21 @@ public class SysRole {
 //    public void setSysUserList(List<SysUser> sysUserList) {
 //        this.sysUserList = sysUserList;
 //    }
+
+    @Override
+    public String toString() {
+        return "SysRole{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", status=" + status +
+                ", sort=" + sort +
+                ", createTime=" + createTime +
+                ", createId=" + createId +
+                ", updateTime=" + updateTime +
+                ", updateId=" + updateId +
+                ", remark='" + remark + '\'' +
+                '}';
+    }
 
     public Integer getId() {
         return id;

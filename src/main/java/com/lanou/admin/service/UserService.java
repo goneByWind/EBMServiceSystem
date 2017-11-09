@@ -12,4 +12,8 @@ public interface UserService {
     List<SysUser> findUserList();
 
     void updateUserById(SysUser sysUser);
+
+    void addUser(SysUser sysUser);
+
+    void deleteUserById(Integer userId);
 }
