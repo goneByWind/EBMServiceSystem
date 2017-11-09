@@ -9,7 +9,7 @@
 
         <!--装配SecurityManager-->
         <property name="securityManager" ref="securityManager"/>
-
+        <property name="successUrl" value="/index"/>
         <!--如果没有认证,需要跳转到的地址,http可以访问到的地址-->
         <!--也就是登录的界面-->
         <!--另外:如果不配置表单认证过滤器,默认的登录认证地址和该配置想用,采用post(登录页面的采用get)-->

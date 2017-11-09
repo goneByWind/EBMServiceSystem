@@ -3,6 +3,7 @@ package com.lanou.exception;
 import com.lanou.utils.AjaxResult;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,8 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 public class ExceptionController {
 
     // 获得session域中的错误信息
+    @ResponseBody
     @RequestMapping(value = "/getErrorMsg")
-    public AjaxResult getErrorMsg(HttpServletRequest request){
+    public AjaxResult getErrorMsg(HttpServletRequest request) {
 
         String errorMsg = (String) request.getSession().getAttribute("error_msg");
 

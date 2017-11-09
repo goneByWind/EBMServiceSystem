@@ -11,10 +11,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 public class MainController {
-    @RequestMapping(value = "/login")
-    public String home() {
-        return "login";
-    }
 
     @RequestMapping(value = "/index")
     public String index(){
