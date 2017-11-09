@@ -29,16 +29,28 @@
                 url: "/loginsubmit",
                 data: {
                     username: $("#username").val(),
-                    password: $("#password").val()
+                    password: $("#password").val(),
+                    rememberMe: $("#rememberMe")[0].checked,
+                    verifyCode: $("#verifyCode").val()
                 },
                 success: function (result) {
                     if (result.errorCode == 1) {
                         $("#error_msg").html(result.message);
+                        changeCode();
                     } else {
                         window.location.href = "/index";
                     }
                 }
             });
+        }
+
+        function genTimestamp() {
+            var time = new Date();
+            return time.getTime();
+        }
+
+        function changeCode() {
+            $("#img").attr("src", "/getverifycode?t=" + genTimestamp());
         }
     </script>
 </head>
@@ -63,15 +75,17 @@
             </div>
             <div class="row cl">
                 <div class="formControls col-xs-8 col-xs-offset-3">
-                    <input class="input-text size-L" type="text" placeholder="验证码"
+                    <input class="input-text size-L" type="text" placeholder="验证码" id="verifyCode"
                            onblur="if(this.value==''){this.value='验证码:'}"
                            onclick="if(this.value=='验证码:'){this.value='';}" value="验证码:" style="width:150px;">
-                    <img src=""> <a id="kanbuq" href="javascript:;">看不清，换一张</a></div>
+                    <img id="img" src="/getverifycode">
+                    <a id="kanbuq" href="javascript:;" onclick="changeCode()">看不清，换一张</a>
+                </div>
             </div>
             <div class="row cl">
                 <div class="formControls col-xs-8 col-xs-offset-3">
-                    <label for="online">
-                        <input type="checkbox" name="online" id="online" value="">
+                    <label for="rememberMe">
+                        <input type="checkbox" name="rememberMe" id="rememberMe">
                         使我保持登录状态</label>
                 </div>
             </div>
