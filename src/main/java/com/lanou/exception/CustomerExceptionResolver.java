@@ -43,10 +43,10 @@ public class CustomerExceptionResolver implements HandlerExceptionResolver {
             }
         }else {
             // 其他异常
-            exception = new CustomerException("未知错误");
+//            exception = new CustomerException("未知错误");
 
             // 获取异常信息
-            String msg = exception.getMessage();
+            String msg = ex.getMessage();
 
             // 将错误信息放在session域当中
             request.getSession().setAttribute("error_msg",msg);

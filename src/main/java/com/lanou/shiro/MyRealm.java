@@ -2,7 +2,6 @@ package com.lanou.shiro;
 
 import com.lanou.admin.bean.SysUser;
 import com.lanou.admin.mapper.SysUserMapper;
-import com.lanou.bean.UserExample;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;

@@ -32,16 +32,16 @@
 <div class="page-container">
     <div class="text-c"> 日期范围：
         <input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" id="datemin"
-               class="input-text Wdate" style="width:120px;">
+               class="input-text Wdate" style="width:120px;" onblur="test()">
         -
         <input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax"
                class="input-text Wdate" style="width:120px;">
-        <input type="text" class="input-text" style="width:250px" placeholder="输入管理员名称" id="" name="">
-        <button type="submit" class="btn btn-success" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜用户</button>
+        <input type="text" class="input-text" style="width:250px" placeholder="输入管理员名称" id="userName" >
+        <button type="submit" class="btn btn-success" id="" name="" onclick="searchWithCondition()"><i class="Hui-iconfont">&#xe665;</i> 搜用户</button>
     </div>
     <!--onclick="admin_add('添加管理员','admin-add.html','800','500')"-->
-    <div class="cl pd-5 bg-1 bk-gray mt-20"><span class="l"><a href="javascript:;" onclick="datadel()"
-                                                               class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a
+    <div class="cl pd-5 bg-1 bk-gray mt-20"><span class="l"><a href="javascript:;" onclick="vastDelete()"
+         class="btn btn-danger radius"><i class="Hui-iconfont" >&#xe6e2;</i> 批量删除</a> <a
             href="javascript:;" onclick="location.href='/userAdd';"
             class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加管理员</a></span> <span
             class="r">共有数据：<strong>54</strong> 条</span></div>
@@ -104,6 +104,13 @@
         </tr>
         </tbody>
     </table>
+
+    <!--分页-->
+    <div class="dataTables_wrapper">
+        <div id="pages" class="dataTables_paginate paging_simple_numbers">
+
+        </div>
+    </div>
 </div>
 <!--_footer 作为公共模版分离出去-->
 <script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
@@ -126,6 +133,11 @@
      w		弹出层宽度（缺省调默认值）
      h		弹出层高度（缺省调默认值）
      */
+    var pageSize = 5;
+
+    function test() {
+        console.log($("#datemin").val());
+    }
 
     // 将时间戳修改为日期类型
     function getLocalTime(jsondate) {
@@ -150,7 +162,7 @@
     /*lxx:添加新的一行*/
     function addNewTr(msg, pageMsg) {
         var td1 = $("<td></td>");
-        $("<input type='checkbox'/>").appendTo(td1);
+        $("<input type='checkbox'/>").attr("userId",msg.id).appendTo(td1);
         var td2 = $("<td></td>").html(msg.id);
         var td3 = $("<td></td>").html(msg.username);
         var td4 = $("<td></td>").html(msg.tel);
@@ -171,7 +183,7 @@
             $("<a style='text-decoration:none' href='javascript:;' title='启用'><i class='Hui-iconfont'>&#xe615; </i></a>").click(admin_start).attr("userId",msg.id).appendTo(td9);
         }
         // 编辑按钮
-        $("<a title='编辑' href='javascript:;' class='ml-5' style='text-decoration:none' ><i class='Hui-iconfont'>&#xe6df; </i></a>").click(admin_edit).attr("userId",msg.id).appendTo(td9);
+        $("<a title='编辑' href='javascript:;' class='ml-5' style='text-decoration:none' ><i class='Hui-iconfont'>&#xe6df; </i></a>").click(saveIdInSessionForAdmin_edit).attr("userId",msg.id).appendTo(td9);
         // 删除按钮
         $("<a title='删除' href='javascript:;' class='ml-5' style='text-decoration:none' ><i class='Hui-iconfont'>&#xe6e2; </i></a>").click(admin_del).attr("userId",msg.id).appendTo(td9);
 
@@ -195,7 +207,100 @@
             }
         })
     }
-    showAllMsg();
+//    showAllMsg();
+
+    /*条件查询*/
+    function searchWithCondition(page,size) {
+        var startData = $("#datemin").val();
+        var endData = $("#datemax").val();
+        var userName = $("#userName").val();
+        $.ajax({
+            url:"/searchWithConditionForUser",
+            type:"post",
+            data:{
+                startData:startData,
+                endData:endData,
+                userName:userName,
+                no:page,
+                size:size
+            },
+            success:function (result) {
+
+                console.log(result.message);
+                // 最开始要进行一下页面内容(tbody id=tab)和页面导航(span id=pages)的清空
+                $("#tab").children().remove();
+                $("#pages").children().remove();
+
+                var pageInfo = result.data;
+                console.log(pageInfo);
+                var listPresent = pageInfo.list;
+                for (var i=0;i<listPresent.length;i++){
+                    addNewTr(listPresent[i],pageInfo)
+                }
+                // 分页导航栏:
+                // (1)上一页
+                if (pageInfo.isFirstPage){
+                    var prePage = $("<a class='paginate_button previous disabled'></a>").html("上一页")
+                }else {
+                    var preNo = pageInfo.prePage;
+                    var prePage = $("<a class='paginate_button previous disabled'></a>").html("上一页").attr("id","pageNo"+preNo).attr("fuzzySearch",true).click(toClickPage);
+                }
+                $("#pages").append(prePage);
+                // (2)页码
+                for (var i=0;i<pageInfo.pages;i++){
+                    // 设置页码:1,2,3...
+                    var pageNoX=$("<a class='paginate_button'></a>").html(i+1).attr("id","pageNo"+(i+1)).attr("fuzzySearch",true).click(toClickPage);
+                    // 为当前页添加背景属性,以作区分
+                    if ((i+1)==pageInfo.pageNum){
+                        pageNoX.attr("class","paginate_button current")
+                    }
+                    // 将页码填入分页导航栏
+                    $("#pages").append(pageNoX)
+                }
+                // (3)下一页
+                if (pageInfo.isLastPage){
+                    var nextPage = $("<a class='paginate_button next disabled'></a>").html("下一页")
+                }else {
+                    var nextNo = pageInfo.nextPage;
+                    var nextPage = $("<a class='paginate_button next disabled'></a>").html("下一页").attr("id","pageNo"+nextNo).attr("fuzzySearch",true).click(toClickPage);
+                }
+                $("#pages").append(nextPage);
+            }
+        })
+    }
+    searchWithCondition();
+    // 跳转到点击的页面
+    function toClickPage() {
+        var pageNo=$(this).attr("id").slice(6);
+        console.log(pageNo);
+        searchWithCondition(pageNo)
+    }
+
+    /*批量删除*/
+    function vastDelete() {
+        var array=[];
+        $("input[type=checkbox]:checked").each(function () {
+            array.push($(this).attr("userId"));
+        });
+        console.log(array);
+        if (array.length==0){
+            alert("请至少勾选一条记录!");
+            return
+        }
+        $.ajax({
+            url:"/vastDeleteUser",
+            type:"post",
+            traditional: true,
+            data:{
+                userIdList:array
+            },
+            success:function (result) {
+                alert(result.message);
+                showAllMsg();
+            }
+        })
+    }
+
 
 
     /*管理员-增加*/
@@ -242,8 +347,18 @@
 //    function admin_edit(title, url, id, w, h) {
 //        layer_show(title, url, w, h);
 //    }
-    function admin_edit(){
-
+    function saveIdInSessionForAdmin_edit(){
+        var userId = $(this).attr("userId");
+        $.ajax({
+            url:"saveUserIdInSession",
+            type:"post",
+            data:{
+                userId:userId
+            },
+            success:function () {
+                window.location.href='/userEditPassword';
+            }
+        })
     }
     /*管理员-停用*/
 //    function admin_stop() {

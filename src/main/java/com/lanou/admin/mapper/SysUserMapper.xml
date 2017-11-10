@@ -74,7 +74,20 @@
     FROM sys_user
     WHERE username=#{username}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <select id="searchWithConditionForUser" resultMap="SysUserResultMap">
+     SELECT
+      <include refid="Base_Column_List"/>
+      FROM sys_user
+      <where>
+        <if test="userName != null" >
+            AND username LIKE CONCAT(CONCAT('%',#{userName}),'%')
+        </if>
+        <if test="startData != null">
+            AND create_time between #{startData} and DATE_ADD(#{endData},INTERVAL 1 DAY)
+        </if>
+      </where>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from sys_user
     where id = #{id,jdbcType=INTEGER}
   </delete>
