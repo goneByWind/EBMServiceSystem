@@ -21,6 +21,11 @@
     id, parent_id, icon, name, urlkey, url, status, type, sort, level, create_time, create_id, 
     update_time, update_id
   </sql>
+    <select id="findByRoleId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_menu WHERE id IN (SELECT menuid FROM sys_role_menu WHERE roleid=#{id})
+    </select>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

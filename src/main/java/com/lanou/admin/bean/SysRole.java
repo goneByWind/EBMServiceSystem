@@ -28,6 +28,17 @@ public class SysRole {
     // 一对多 一个角色 可以同时由多个管理员担当
     private List<SysUser> SysUserList;
 
+    private List<SysMenu> sysMenus;
+
+
+    public List<SysMenu> getSysMenus() {
+        return sysMenus;
+    }
+
+    public void setSysMenus(List<SysMenu> sysMenus) {
+        this.sysMenus = sysMenus;
+    }
+
     @Override
     public String toString() {
         return "SysRole{" +
@@ -42,6 +53,7 @@ public class SysRole {
                 ", updateId=" + updateId +
                 ", createUser=" + createUser +
                 ", SysUserList=" + SysUserList +
+                ", sysMenus=" + sysMenus +
                 '}';
     }
 

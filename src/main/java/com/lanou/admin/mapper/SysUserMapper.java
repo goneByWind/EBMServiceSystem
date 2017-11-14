@@ -30,7 +30,6 @@ public interface SysUserMapper {
     List<SysUser> findUserList();
 
     /**
-     *
      * @param startData 查询:起始创建时间
      * @param endData   查询:结束创建时间
      * @param userName  用户名(可模糊)
@@ -41,4 +40,12 @@ public interface SysUserMapper {
                                              @Param("userName") String userName);
 
     List<SysUser> findUserListByRoleId(@Param("roleId") Integer roleId);
+
+    /**
+     * 通过id查询user
+     *
+     * @param userId 用户id
+     * @return 用户对象
+     */
+    SysUser findByUserId(@Param("userId") Integer userId);
 }

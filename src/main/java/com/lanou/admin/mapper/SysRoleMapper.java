@@ -1,6 +1,7 @@
 package com.lanou.admin.mapper;
 
 import com.lanou.admin.bean.SysRole;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,4 +22,12 @@ public interface SysRoleMapper {
     List<SysRole> findRoleList();
 
     List<SysRole> showRoleListWithPage();
+
+    /**
+     * 级联查找角色
+     *
+     * @param roleId 角色id
+     * @return 角色
+     */
+    SysRole findByRoleId(@Param("roleId") Integer roleId);
 }

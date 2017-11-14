@@ -24,4 +24,6 @@ public interface SysMenuMapper {
      * @return 菜单集合
      */
     List<SysMenu> findAllMenu(@Param("menuName") String menuName);
+
+    List<SysMenu> findByRoleId(@Param("id") Integer id);
 }

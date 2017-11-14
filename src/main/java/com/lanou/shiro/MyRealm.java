@@ -56,7 +56,9 @@ public class MyRealm extends AuthorizingRealm {
         /*这个是上面认证时,放在return中的user,好方便*/
         SysUser sysUser = (SysUser) principalCollection.getPrimaryPrincipal();
         // 可以获取user的用户id及各种信息↑
-
+        SysUser byUserId = sysUserMapper.findByUserId(sysUser.getId());
+        System.out.println(byUserId);
+        System.out.println(sysUser);
         // TODO: 2017/11/9 授权!!! 
         List<String> perList = Arrays.asList("user:query", "user:update");
 
