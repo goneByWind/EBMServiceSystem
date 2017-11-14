@@ -1,9 +1,7 @@
 package com.lanou.admin.mapper;
 
 import com.lanou.admin.bean.SysRole;
-
-import java.util.List;
-
+// 更改了mappper
 public interface SysRoleMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -15,9 +13,5 @@ public interface SysRoleMapper {
 
     int updateByPrimaryKeySelective(SysRole record);
 
-    int updateByPrimaryKeyWithBLOBs(SysRole record);
-
     int updateByPrimaryKey(SysRole record);
-
-    List<SysRole> findRoleList();
 }

@@ -1,7 +1,6 @@
 package com.lanou.admin.bean;
 
 import java.util.Date;
-import java.util.List;
 
 public class SysRole {
     private Integer id;
@@ -12,6 +11,8 @@ public class SysRole {
 
     private Integer sort;
 
+    private String remark;
+
     private Date createTime;
 
     private Integer createId;
@@ -19,34 +20,6 @@ public class SysRole {
     private Date updateTime;
 
     private Integer updateId;
-
-    private String remark;
-
-    /*一对多:一个角色对应多个管理员(用不到)*/
-//    private List<SysUser> sysUserList;
-//
-//    public List<SysUser> getSysUserList() {
-//        return sysUserList;
-//    }
-//
-//    public void setSysUserList(List<SysUser> sysUserList) {
-//        this.sysUserList = sysUserList;
-//    }
-
-    @Override
-    public String toString() {
-        return "SysRole{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", status=" + status +
-                ", sort=" + sort +
-                ", createTime=" + createTime +
-                ", createId=" + createId +
-                ", updateTime=" + updateTime +
-                ", updateId=" + updateId +
-                ", remark='" + remark + '\'' +
-                '}';
-    }
 
     public Integer getId() {
         return id;
@@ -80,6 +53,14 @@ public class SysRole {
         this.sort = sort;
     }
 
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -110,13 +91,5 @@ public class SysRole {
 
     public void setUpdateId(Integer updateId) {
         this.updateId = updateId;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
     }
 }

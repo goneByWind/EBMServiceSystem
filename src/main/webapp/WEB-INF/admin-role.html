@@ -120,6 +120,42 @@
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript" src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
+    /*添加新的一行*/
+    function addNewTr(msg, pageMsg) {
+        var td1 = $("<td></td>");
+        $("<input type='checkbox'/>").attr("roleId",msg.id).appendTo(td1);
+        var td2 = $("<td></td>").html(msg.name);
+        var td3 = $("<td></td>").html(msg.createTime);
+        /*表中只有创建人的id,通过id查找创建人的姓名*/
+        var td4 = $("<td></td>").html(msg.createId);
+        var td5 = $("<td></td>").html(msg.email);
+        var td6 = $("<td></td>").html(msg.sysRole.name);
+        var td7 = $("<td></td>").html(getLocalTime(msg.createTime));
+        var td8 = $("<td class='td-status'></td>");
+        var td9 = $("<td class='td-manage'></td>");
+        if (msg.state == 1) {
+            $("<span class='label label-success radius'></span>").html("已启用").appendTo(td8);
+            // 停用按钮(启用时)
+            $("<a style='text-decoration:none' href='javascript:;' title='停用'><i class='Hui-iconfont'>&#xe631; </i></a>").click(admin_stop).attr("userId",msg.id).appendTo(td9);
+
+        }
+        if (msg.state == 0) {
+            $("<span class='label radius'></span>").html("已停用").appendTo(td8);
+            // 启动按钮(停用时)
+            $("<a style='text-decoration:none' href='javascript:;' title='启用'><i class='Hui-iconfont'>&#xe615; </i></a>").click(admin_start).attr("userId",msg.id).appendTo(td9);
+        }
+        // 编辑按钮
+        $("<a title='编辑' href='javascript:;' class='ml-5' style='text-decoration:none' ><i class='Hui-iconfont'>&#xe6df; </i></a>").click(saveIdInSessionForAdmin_edit).attr("userId",msg.id).appendTo(td9);
+        // 删除按钮
+        $("<a title='删除' href='javascript:;' class='ml-5' style='text-decoration:none' ><i class='Hui-iconfont'>&#xe6e2; </i></a>").click(admin_del).attr("userId",msg.id).appendTo(td9);
+
+        var tr1 = $("<tr class='text-c'></tr>").append(td1).append(td2).append(td3).append(td4).append(td5).append(td6).append(td7).append(td8).append(td9);
+
+        $("#tab").append(tr1)
+
+    }
+
+
     /*管理员-角色-添加*/
     function admin_role_add(title, url, w, h) {
         layer_show(title, url, w, h);
