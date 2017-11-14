@@ -115,8 +115,6 @@ public class UserController {
                                                  @RequestParam(value = "userName",required = false) String userName,
                                                  @RequestParam(value = "no",required=false) Integer pageNo,
                                                  @RequestParam(value = "size",required=false) Integer pageSize) throws ParseException {
-        System.out.println(startData);
-        System.out.println(endData);
         PageInfo<SysUser> sysUserPageInfo = userService.searchWithConditionForUser(startData, endData, userName, pageNo, pageSize);
         return new AjaxResult(sysUserPageInfo,0,"模糊查询&分页后的数据");
     }

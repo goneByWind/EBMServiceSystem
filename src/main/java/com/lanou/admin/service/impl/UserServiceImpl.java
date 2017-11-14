@@ -69,14 +69,10 @@ public class UserServiceImpl implements UserService {
         startData = startData.equals("")?startData1:startData;
         endData = endData.equals("")?endData1:endData;
 
-        System.out.println("开始时间"+startData);
-        System.out.println("结束时间"+endData);
 
         PageHelper.startPage(pageNo,pageSize);
 
         List<SysUser> sysUserList = sysUserMapper.searchWithConditionForUser(startData, endData, userName);
-
-        System.out.println(sysUserList);
 
         PageInfo<SysUser> sysUserPageInfo = new PageInfo<SysUser>(sysUserList);
 

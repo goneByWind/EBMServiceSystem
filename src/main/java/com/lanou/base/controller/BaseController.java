@@ -157,4 +157,21 @@ public class BaseController {
     public String systemLog() {
         return "system-log";
     }
+
+    @RequestMapping(value = "/articleadd")
+    public String articleAdd() {
+        return "article-add";
+    }
+    @RequestMapping(value = "/pictureadd")
+    public String pictureAdd() {
+        return "picture-add";
+    }
+    @RequestMapping(value = "/productadd")
+    public String productAdd() {
+        return "product-add";
+    }
+    @RequestMapping(value = "/memberadd")
+    public String memberAdd() {
+        return "member-add";
+    }
 }

@@ -1,16 +1,23 @@
 package com.lanou.admin.controller;
 
+import com.lanou.admin.bean.SysUser;
+import com.lanou.admin.service.LoginService;
 import com.lanou.utils.AjaxResult;
 import com.lanou.utils.VerifyCode;
+import org.apache.activemq.leveldb.replicated.dto.Login;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.support.DefaultSubjectContext;
+import org.junit.Test;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +29,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Random;
 
 /**
@@ -29,6 +37,10 @@ import java.util.Random;
  */
 @Controller
 public class LoginUser {
+
+    @Resource
+    private LoginService loginService;
+
     @RequestMapping(value = "/login")
     public String home() {
         if (SecurityUtils.getSubject().isAuthenticated()) {
@@ -60,6 +72,7 @@ public class LoginUser {
         }
         try {
             SecurityUtils.getSubject().login(token);
+            request.getSession().setAttribute("username", username);
             return new AjaxResult(0, "登录成功");
         } catch (UnknownAccountException uae) {
             return new AjaxResult(1, "用户名错误");
@@ -80,5 +93,12 @@ public class LoginUser {
         outputStream.writeTo(stream);
         Calendar calendar = Calendar.getInstance();
         request.getSession().setAttribute("now", calendar.getTime().getTime());
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/getuser")
+    public AjaxResult getUser(HttpServletRequest request) {
+        Object attribute = request.getSession().getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY);
+        return new AjaxResult(attribute, 0, null);
     }
 }
