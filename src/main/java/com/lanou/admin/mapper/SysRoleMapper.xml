@@ -6,33 +6,48 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_id" jdbcType="INTEGER" property="createId" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_id" jdbcType="INTEGER" property="updateId" />
   </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.lanou.admin.bean.SysRole">
-    <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+
+  <resultMap id="RoleResultMap" type="com.lanou.admin.bean.SysRole">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_id" jdbcType="INTEGER" property="createId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_id" jdbcType="INTEGER" property="updateId" />
+
+    <association property="createUser"
+                 column="create_id"
+                 select="com.lanou.admin.mapper.SysUserMapper.selectByPrimaryKey"/>
+    <collection property="SysUserList"
+                column="id"
+                select="com.lanou.admin.mapper.SysUserMapper.findUserListByRoleId"/>
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, status, sort, create_time, create_id, update_time, update_id
+    id, name, status, sort, remark, create_time, create_id, update_time, update_id
   </sql>
-  <sql id="Blob_Column_List">
-    remark
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from sys_role
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <select id="findRoleList" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+  <select id="findRoleList" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
+    from sys_role
+  </select>
+  <select id="showRoleListWithPage" resultMap="RoleResultMap">
+    select
+    <include refid="Base_Column_List" />
     from sys_role
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
@@ -41,12 +56,12 @@
   </delete>
   <insert id="insert" parameterType="com.lanou.admin.bean.SysRole">
     insert into sys_role (id, name, status, 
-      sort, create_time, create_id, 
-      update_time, update_id, remark
+      sort, remark, create_time, 
+      create_id, update_time, update_id
       )
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
-      #{sort,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{createId,jdbcType=INTEGER}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{updateId,jdbcType=INTEGER}, #{remark,jdbcType=LONGVARCHAR}
+      #{sort,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{updateId,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.lanou.admin.bean.SysRole">
@@ -64,6 +79,9 @@
       <if test="sort != null">
         sort,
       </if>
+      <if test="remark != null">
+        remark,
+      </if>
       <if test="createTime != null">
         create_time,
       </if>
@@ -75,9 +93,6 @@
       </if>
       <if test="updateId != null">
         update_id,
-      </if>
-      <if test="remark != null">
-        remark,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -93,6 +108,9 @@
       <if test="sort != null">
         #{sort,jdbcType=INTEGER},
       </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -104,9 +122,6 @@
       </if>
       <if test="updateId != null">
         #{updateId,jdbcType=INTEGER},
-      </if>
-      <if test="remark != null">
-        #{remark,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
@@ -122,6 +137,9 @@
       <if test="sort != null">
         sort = #{sort,jdbcType=INTEGER},
       </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -134,22 +152,7 @@
       <if test="updateId != null">
         update_id = #{updateId,jdbcType=INTEGER},
       </if>
-      <if test="remark != null">
-        remark = #{remark,jdbcType=LONGVARCHAR},
-      </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.lanou.admin.bean.SysRole">
-    update sys_role
-    set name = #{name,jdbcType=VARCHAR},
-      status = #{status,jdbcType=INTEGER},
-      sort = #{sort,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      create_id = #{createId,jdbcType=INTEGER},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      update_id = #{updateId,jdbcType=INTEGER},
-      remark = #{remark,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.lanou.admin.bean.SysRole">
@@ -157,6 +160,7 @@
     set name = #{name,jdbcType=VARCHAR},
       status = #{status,jdbcType=INTEGER},
       sort = #{sort,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       create_id = #{createId,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP},

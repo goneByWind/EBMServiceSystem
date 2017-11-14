@@ -12,6 +12,8 @@ public class SysRole {
 
     private Integer sort;
 
+    private String remark;
+
     private Date createTime;
 
     private Integer createId;
@@ -20,18 +22,11 @@ public class SysRole {
 
     private Integer updateId;
 
-    private String remark;
+    // 一对一 一个角色 要有一个管理员来创建,这位管理员的id为createId
+    private SysUser createUser;
 
-    /*一对多:一个角色对应多个管理员(用不到)*/
-//    private List<SysUser> sysUserList;
-//
-//    public List<SysUser> getSysUserList() {
-//        return sysUserList;
-//    }
-//
-//    public void setSysUserList(List<SysUser> sysUserList) {
-//        this.sysUserList = sysUserList;
-//    }
+    // 一对多 一个角色 可以同时由多个管理员担当
+    private List<SysUser> SysUserList;
 
     @Override
     public String toString() {
@@ -40,12 +35,30 @@ public class SysRole {
                 ", name='" + name + '\'' +
                 ", status=" + status +
                 ", sort=" + sort +
+                ", remark='" + remark + '\'' +
                 ", createTime=" + createTime +
                 ", createId=" + createId +
                 ", updateTime=" + updateTime +
                 ", updateId=" + updateId +
-                ", remark='" + remark + '\'' +
+                ", createUser=" + createUser +
+                ", SysUserList=" + SysUserList +
                 '}';
+    }
+
+    public List<SysUser> getSysUserList() {
+        return SysUserList;
+    }
+
+    public void setSysUserList(List<SysUser> sysUserList) {
+        SysUserList = sysUserList;
+    }
+
+    public SysUser getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(SysUser createUser) {
+        this.createUser = createUser;
     }
 
     public Integer getId() {
@@ -80,6 +93,14 @@ public class SysRole {
         this.sort = sort;
     }
 
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -110,13 +131,5 @@ public class SysRole {
 
     public void setUpdateId(Integer updateId) {
         this.updateId = updateId;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
     }
 }

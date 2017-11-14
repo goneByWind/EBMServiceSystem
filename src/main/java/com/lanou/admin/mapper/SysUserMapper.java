@@ -39,4 +39,6 @@ public interface SysUserMapper {
     List<SysUser> searchWithConditionForUser(@Param("startData") String startData,
                                              @Param("endData") String endData,
                                              @Param("userName") String userName);
+
+    List<SysUser> findUserListByRoleId(@Param("roleId") Integer roleId);
 }

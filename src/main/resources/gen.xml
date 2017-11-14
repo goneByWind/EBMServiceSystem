@@ -37,7 +37,9 @@
         </javaClientGenerator>
 
         <!-- !!!! Table Configurations !!!! -->
-        <table tableName="sys_menu" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
-               enableUpdateByExample="false"/>
+        <table tableName="sys_role" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
+               enableUpdateByExample="false">
+            <columnOverride column="remark" jdbcType="VARCHAR" javaType="java.lang.String"/>
+        </table>
     </context>
 </generatorConfiguration>

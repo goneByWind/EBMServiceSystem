@@ -87,7 +87,11 @@
         </if>
       </where>
     </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <select id="findUserListByRoleId" resultMap="BaseResultMap">
+    SELECT  <include refid="Base_Column_List" />
+    FROM sys_user WHERE role_id = #{roleId}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from sys_user
     where id = #{id,jdbcType=INTEGER}
   </delete>
