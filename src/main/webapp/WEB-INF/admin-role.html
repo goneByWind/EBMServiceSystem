@@ -39,15 +39,19 @@
             <th scope="col" colspan="6">角色管理</th>
         </tr>
         <tr class="text-c">
-            <th width="25"><input type="checkbox" value="" name=""></th>
-            <th width="40">ID</th>
-            <th width="200">角色名</th>
-            <th>用户列表</th>
-            <th width="300">描述</th>
-            <th width="70">操作</th>
+            <th ><input type="checkbox" value="" name=""></th>
+            <th >ID</th>
+            <th >角色名</th>
+            <th >创建时间</th>
+            <th >创建人</th>
+            <th >管理员列表</th>
+            <th >描述</th>
+            <th >排序</th>
+            <th >状态</th>
+            <th >操作</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody id="tab">
         <tr class="text-c">
             <td><input type="checkbox" value="" name=""></td>
             <td>1</td>
@@ -110,6 +114,12 @@
         </tr>
         </tbody>
     </table>
+    <!--分页-->
+    <div class="dataTables_wrapper">
+        <div id="pages" class="dataTables_paginate paging_simple_numbers">
+
+        </div>
+    </div>
 </div>
 <!--_footer 作为公共模版分离出去-->
 <script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
@@ -120,42 +130,146 @@
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript" src="lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
+
+    // 将时间戳修改为日期类型
+    function getLocalTime(jsondate) {
+        if (jsondate !== null && jsondate.toString().length > 0) {
+            jsondate = "" + jsondate + "";//因为jsonDate是number型的indexOf会报错
+            if (jsondate.indexOf("+") > 0) {
+                jsondate = jsondate.substring(0, jsondate.indexOf("+"));
+            }
+            else if (jsondate.indexOf("-") > 0) {
+                jsondate = jsondate.substring(0, jsondate.indexOf("-"));
+            }
+            var date = new Date(parseInt(jsondate, 10));
+            var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+            var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+            var hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+            var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+            var seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+            return date.getFullYear() + "-" + month + "-" + currentDate + " " + hours + ":" + minutes + ":" + seconds;
+        }
+    }
     /*添加新的一行*/
     function addNewTr(msg, pageMsg) {
         var td1 = $("<td></td>");
         $("<input type='checkbox'/>").attr("roleId",msg.id).appendTo(td1);
-        var td2 = $("<td></td>").html(msg.name);
-        var td3 = $("<td></td>").html(msg.createTime);
+        var td2 = $("<td></td>").html(msg.id);
+        var td3 = $("<td></td>").html(msg.name);
+        var td4 = $("<td></td>").html(getLocalTime(msg.createTime));
         /*表中只有创建人的id,通过id查找创建人的姓名*/
-        var td4 = $("<td></td>").html(msg.createId);
-        var td5 = $("<td></td>").html(msg.email);
-        var td6 = $("<td></td>").html(msg.sysRole.name);
-        var td7 = $("<td></td>").html(getLocalTime(msg.createTime));
+        var td5 = $("<td></td>").html(msg.createUser.username);
+        /*遍历该角色所对应的管理员集合,添加到td5*/
+        var td6 = $("<td></td>");
+//        var str = "";
+        console.log(msg);
+        for (var i=0;i<msg.sysUserList.length;i++){
+//            str += msg.sysUserList[i].username+" "
+            $("<a></a>").html(msg.sysUserList[i].username+" ").attr("userId",msg.sysUserList[i].id).click(showUserDetail).appendTo(td6)
+        }
+        var td7 = $("<td></td>").html(msg.remark);
+        var td10 = $("<td></td>").html(msg.sort);
         var td8 = $("<td class='td-status'></td>");
         var td9 = $("<td class='td-manage'></td>");
-        if (msg.state == 1) {
-            $("<span class='label label-success radius'></span>").html("已启用").appendTo(td8);
+        if (msg.status == 1) {
+            $("<span class='label label-success radius'></span>").html("显示").appendTo(td8);
             // 停用按钮(启用时)
-            $("<a style='text-decoration:none' href='javascript:;' title='停用'><i class='Hui-iconfont'>&#xe631; </i></a>").click(admin_stop).attr("userId",msg.id).appendTo(td9);
+            $("<a style='text-decoration:none' href='javascript:;' title='停用'><i class='Hui-iconfont'>&#xe631; </i></a>").click(role_hide).attr("roleId",msg.id).appendTo(td9);
 
         }
-        if (msg.state == 0) {
-            $("<span class='label radius'></span>").html("已停用").appendTo(td8);
+        if (msg.status == 0) {
+            $("<span class='label radius'></span>").html("隐藏").appendTo(td8);
             // 启动按钮(停用时)
-            $("<a style='text-decoration:none' href='javascript:;' title='启用'><i class='Hui-iconfont'>&#xe615; </i></a>").click(admin_start).attr("userId",msg.id).appendTo(td9);
+            $("<a style='text-decoration:none' href='javascript:;' title='启用'><i class='Hui-iconfont'>&#xe615; </i></a>").click(role_show).attr("roleId",msg.id).appendTo(td9);
         }
         // 编辑按钮
-        $("<a title='编辑' href='javascript:;' class='ml-5' style='text-decoration:none' ><i class='Hui-iconfont'>&#xe6df; </i></a>").click(saveIdInSessionForAdmin_edit).attr("userId",msg.id).appendTo(td9);
+        $("<a title='编辑' href='javascript:;' class='ml-5' style='text-decoration:none' ><i class='Hui-iconfont'>&#xe6df; </i></a>").appendTo(td9);//.click(saveRoleIdInSessionForAdmin_edit).attr("roleId",msg.id);
         // 删除按钮
-        $("<a title='删除' href='javascript:;' class='ml-5' style='text-decoration:none' ><i class='Hui-iconfont'>&#xe6e2; </i></a>").click(admin_del).attr("userId",msg.id).appendTo(td9);
+        $("<a title='删除' href='javascript:;' class='ml-5' style='text-decoration:none' ><i class='Hui-iconfont'>&#xe6e2; </i></a>").click(role_del).attr("roleId",msg.id).appendTo(td9);
 
-        var tr1 = $("<tr class='text-c'></tr>").append(td1).append(td2).append(td3).append(td4).append(td5).append(td6).append(td7).append(td8).append(td9);
+        var tr1 = $("<tr class='text-c'></tr>").append(td1).append(td2).append(td3).append(td4).append(td5).append(td6).append(td7).append(td10).append(td8).append(td9);
 
         $("#tab").append(tr1)
+    }
 
+    /*分页显示全部*/
+    function showRoleListWithPage(page,size) {
+
+        $.ajax({
+            url:"/showRoleListWithPage",
+            type:"post",
+            data:{
+                no:page,
+                size:size
+            },
+            success:function (result) {
+                console.log(result);
+                console.log(result.message);
+                // 最开始要进行一下页面内容(tbody id=tab)和页面导航(span id=pages)的清空
+                $("#tab").children().remove();
+                $("#pages").children().remove();
+
+                var pageInfo = result.data;
+                console.log(pageInfo);
+                var listPresent = pageInfo.list;
+                for (var i=0;i<listPresent.length;i++){
+                    addNewTr(listPresent[i],pageInfo)
+                }
+                // 分页导航栏:
+                // (1)上一页
+                if (pageInfo.isFirstPage){
+                    var prePage = $("<a class='paginate_button previous disabled'></a>").html("上一页")
+                }else {
+                    var preNo = pageInfo.prePage;
+                    var prePage = $("<a class='paginate_button previous disabled'></a>").html("上一页").attr("id","pageNo"+preNo).attr("fuzzySearch",true).click(toClickPage);
+                }
+                $("#pages").append(prePage);
+                // (2)页码
+                for (var i=0;i<pageInfo.pages;i++){
+                    // 设置页码:1,2,3...
+                    var pageNoX=$("<a class='paginate_button'></a>").html(i+1).attr("id","pageNo"+(i+1)).attr("fuzzySearch",true).click(toClickPage);
+                    // 为当前页添加背景属性,以作区分
+                    if ((i+1)==pageInfo.pageNum){
+                        pageNoX.attr("class","paginate_button current")
+                    }
+                    // 将页码填入分页导航栏
+                    $("#pages").append(pageNoX)
+                }
+                // (3)下一页
+                if (pageInfo.isLastPage){
+                    var nextPage = $("<a class='paginate_button next disabled'></a>").html("下一页")
+                }else {
+                    var nextNo = pageInfo.nextPage;
+                    var nextPage = $("<a class='paginate_button next disabled'></a>").html("下一页").attr("id","pageNo"+nextNo).attr("fuzzySearch",true).click(toClickPage);
+                }
+                $("#pages").append(nextPage);
+            }
+        })
+    }
+    showRoleListWithPage();
+    // 跳转到点击的页面
+    function toClickPage() {
+        var pageNo=$(this).attr("id").slice(6);
+        console.log(pageNo);
+        showRoleListWithPage(pageNo)
     }
 
 
+    function role_hide() {
+        
+    }
+    
+    function role_show() {
+        
+    }
+    
+    function role_del() {
+        
+    }
+
+    function showUserDetail() {
+
+    }
     /*管理员-角色-添加*/
     function admin_role_add(title, url, w, h) {
         layer_show(title, url, w, h);

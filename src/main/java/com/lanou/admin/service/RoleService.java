@@ -1,5 +1,6 @@
 package com.lanou.admin.service;
 
+import com.github.pagehelper.PageInfo;
 import com.lanou.admin.bean.SysRole;
 
 import java.util.List;
@@ -9,4 +10,6 @@ import java.util.List;
  */
 public interface RoleService {
     List<SysRole> findRoleList();
+
+    PageInfo<SysRole> showRoleListWithPage(Integer pageNo, Integer pageSize);
 }

@@ -1,6 +1,7 @@
 package com.lanou.admin.bean;
 
 import java.util.Date;
+import java.util.List;
 
 public class SysRole {
     private Integer id;
@@ -20,6 +21,45 @@ public class SysRole {
     private Date updateTime;
 
     private Integer updateId;
+
+    // 一对一 一个角色 要有一个管理员来创建,这位管理员的id为createId
+    private SysUser createUser;
+
+    // 一对多 一个角色 可以同时由多个管理员担当
+    private List<SysUser> SysUserList;
+
+    @Override
+    public String toString() {
+        return "SysRole{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", status=" + status +
+                ", sort=" + sort +
+                ", remark='" + remark + '\'' +
+                ", createTime=" + createTime +
+                ", createId=" + createId +
+                ", updateTime=" + updateTime +
+                ", updateId=" + updateId +
+                ", createUser=" + createUser +
+                ", SysUserList=" + SysUserList +
+                '}';
+    }
+
+    public List<SysUser> getSysUserList() {
+        return SysUserList;
+    }
+
+    public void setSysUserList(List<SysUser> sysUserList) {
+        SysUserList = sysUserList;
+    }
+
+    public SysUser getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(SysUser createUser) {
+        this.createUser = createUser;
+    }
 
     public Integer getId() {
         return id;

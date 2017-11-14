@@ -12,6 +12,25 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_id" jdbcType="INTEGER" property="updateId" />
   </resultMap>
+
+  <resultMap id="RoleResultMap" type="com.lanou.admin.bean.SysRole">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_id" jdbcType="INTEGER" property="createId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_id" jdbcType="INTEGER" property="updateId" />
+
+    <association property="createUser"
+                 column="create_id"
+                 select="com.lanou.admin.mapper.SysUserMapper.selectByPrimaryKey"/>
+    <collection property="SysUserList"
+                column="id"
+                select="com.lanou.admin.mapper.SysUserMapper.findUserListByRoleId"/>
+  </resultMap>
   <sql id="Base_Column_List">
     id, name, status, sort, remark, create_time, create_id, update_time, update_id
   </sql>
@@ -20,6 +39,16 @@
     <include refid="Base_Column_List" />
     from sys_role
     where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="findRoleList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_role
+  </select>
+  <select id="showRoleListWithPage" resultMap="RoleResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_role
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from sys_role
