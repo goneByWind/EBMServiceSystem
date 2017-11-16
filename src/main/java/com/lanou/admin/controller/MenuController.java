@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.lanou.admin.bean.SysMenu;
 import com.lanou.admin.service.MenuService;
 import com.lanou.utils.AjaxResult;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

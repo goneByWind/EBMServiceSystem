@@ -31,6 +31,7 @@
             $.ajax({
                 url: "/getuser",
                 success: function (result) {
+                    console.log(result);
                     $("#adminName").html(result.data.primaryPrincipal.realname);
                 }
             })

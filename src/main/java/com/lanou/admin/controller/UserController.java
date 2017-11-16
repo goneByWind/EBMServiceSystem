@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.lanou.admin.bean.SysUser;
 import com.lanou.admin.service.UserService;
 import com.lanou.utils.AjaxResult;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,18 +26,24 @@ public class UserController {
     @Resource
     private UserService userService;
 
+    @RequiresPermissions("authc")
     @RequestMapping(value = "/userlist")
     public String userList(){
         return "admin-list";
     }
+
+    @RequiresPermissions("system-admin-list")
     @RequestMapping(value = "/userAdd")
     public String userAdd(){
         return "admin-add";
     }
+
+    @RequiresPermissions("system-admin-list")
     @RequestMapping(value = "/userEditPassword")
     public String userModi(){
         return "admin-password-edit";
     }
+
     @ResponseBody
     @RequestMapping("/findSysUser")
     public AjaxResult findSysUser(){
@@ -44,6 +51,7 @@ public class UserController {
         return new AjaxResult(userList,0,"返回全部管理员条目");
     }
 
+    @RequiresPermissions("system-admin-list")
     @ResponseBody
     @RequestMapping("/stopUser")
     public AjaxResult stopUser(SysUser sysUser){
@@ -51,6 +59,7 @@ public class UserController {
         return new AjaxResult("修改用户状态为:已停用");
     }
 
+    @RequiresPermissions("system-admin-list")
     @ResponseBody
     @RequestMapping("/startUser")
     public AjaxResult startUser(SysUser sysUser){
@@ -58,6 +67,7 @@ public class UserController {
         return new AjaxResult("修改用户状态为:已启用");
     }
 
+    @RequiresPermissions("system-admin-list")
     @ResponseBody
     @RequestMapping("/addUser")
     public AjaxResult addUser(SysUser sysUser){
@@ -67,6 +77,7 @@ public class UserController {
         return new AjaxResult("添加新管理员成功");
     }
 
+    @RequiresPermissions("system-admin-list")
     @ResponseBody
     @RequestMapping("/deleteUser")
     public AjaxResult deleteUser(@RequestParam("id") Integer userId){
@@ -88,6 +99,8 @@ public class UserController {
         String password = userById.getPassword();
         return new AjaxResult(password,0,"通过session中的userId查找出密码");
     }
+
+    @RequiresPermissions("system-admin-list")
     @ResponseBody
     @RequestMapping("/modiPassword")
     public AjaxResult modiPassword(HttpServletRequest request,@RequestParam("newPassword")String password){
@@ -98,6 +111,7 @@ public class UserController {
         return new AjaxResult("修改该管理员密码成功!");
     }
 
+    @RequiresPermissions("system-admin-list")
     @ResponseBody
     @RequestMapping("/vastDeleteUser")
     public AjaxResult vastDeleteUser(@RequestParam(value = "userIdList",required = false) Integer[] userIdList){

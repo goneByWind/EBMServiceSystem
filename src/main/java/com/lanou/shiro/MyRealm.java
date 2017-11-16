@@ -1,5 +1,6 @@
 package com.lanou.shiro;
 
+import com.lanou.admin.bean.SysMenu;
 import com.lanou.admin.bean.SysUser;
 import com.lanou.admin.mapper.SysUserMapper;
 import org.apache.shiro.authc.*;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,17 +59,14 @@ public class MyRealm extends AuthorizingRealm {
         SysUser sysUser = (SysUser) principalCollection.getPrimaryPrincipal();
         // 可以获取user的用户id及各种信息↑
         SysUser byUserId = sysUserMapper.findByUserId(sysUser.getId());
-        System.out.println(byUserId);
-        System.out.println(sysUser);
-        // TODO: 2017/11/9 授权!!! 
-        List<String> perList = Arrays.asList("user:query", "user:update");
-
+        List<String> perList = new ArrayList<>();
+        for (SysMenu sysMenu : byUserId.getSysRole().getSysMenus()) {
+            perList.add(sysMenu.getUrlkey());
+        }
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-
         for (String per : perList) {
             info.addStringPermission(per);
         }
-
-        return null;
+        return info;
     }
 }

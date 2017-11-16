@@ -55,6 +55,10 @@
         <property name="basePackage" value="com.lanou.admin.mapper"/>
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
     </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.lanou.picture.mapper"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
 
     <!--5.配置事务管理器-->
     <bean id="transactionManager"
